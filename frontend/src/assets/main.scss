@@ -1,0 +1,60 @@
+//body {
+//  margin: 0;
+//  background-color: #ffffff;
+//}
+//
+///* fade-slide */
+//.fade-slide-leave-active,
+//.fade-slide-enter-active {
+//  transition: all 0.3s;
+//}
+//
+//.fade-slide-enter-from {
+//  transform: translateX(-30px);
+//  opacity: 0;
+//}
+//
+//.fade-slide-leave-to {
+//  transform: translateX(30px);
+//  opacity: 0;
+//}
+
+
+:root {
+  --primary-color: #409EFF; /* Element Plus 主色，保持一致性 */
+  --secondary-color: #66B1FF;
+  --text-color: #303133;
+}
+
+/* 强制允许页面滚动，防止 Element Plus 等组件修改 */
+html, body {
+  overflow: auto !important;
+  height: auto !important;
+  min-height: 100vh !important;
+}
+
+#app {
+  overflow: visible !important;
+  height: auto !important;
+}
+
+body {
+  font-family: "Microsoft YaHei", sans-serif;
+  color: var(--text-color);
+  background-color: var(--light-bg);
+}
+
+.el-button {
+  border-radius: 8px;
+}
+
+.el-card {
+  border-radius: 12px;
+  box-shadow: var(--card-shadow);
+  transition: all 0.3s ease;
+}
+
+.el-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
