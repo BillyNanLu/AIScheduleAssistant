@@ -1,11 +1,10 @@
 <script setup>
-
+import Login from '@/views/Login.vue'
 </script>
 
 <template>
-  Hello, AI Schedule Assistant
-  <br>
-  ©️nan19工作室
+  <Login />
+
 </template>
 
 <style scoped>
