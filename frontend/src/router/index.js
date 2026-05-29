@@ -6,11 +6,19 @@ import Login from "@/views/Login.vue";
 import NotFound from "@/views/NotFound.vue"; // 404
 
 // 导入视图
+import Home from "@/views/Home.vue";
 
 // 定义路由关系
 const routes = [
     { path: '/login', component: Login },
-    { path: '/', component: Layout },
+    {
+        path: '/',
+        component: Layout,
+        redirect: '/home',
+        children: [
+            { path: '/home', component: Home }
+        ]
+    },
     // 404
     {
         path: '/:pathMatch(.*)*',
