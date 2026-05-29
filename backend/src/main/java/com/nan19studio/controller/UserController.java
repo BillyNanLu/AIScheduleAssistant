@@ -5,14 +5,17 @@ import com.nan19studio.pojo.User;
 import com.nan19studio.service.UserService;
 import com.nan19studio.utils.JwtUtil;
 import com.nan19studio.utils.Md5Util;
+import com.nan19studio.utils.ThreadLocalUtil;
 import jakarta.validation.constraints.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.util.StringUtils;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -71,10 +74,74 @@ public class UserController {
             String token = JwtUtil.genToken(claims);
             // 把token存到redis中
             ValueOperations<String, String> operations = stringRedisTemplate.opsForValue();
-            operations.set(token, token, 12, TimeUnit.HOURS);
+            operations.set(token, token, 720, TimeUnit.HOURS);
             return Result.success(token);
         }
 
         return Result.error("密码错误");
     }
+
+    // TODO: 获取用户信息
+    @GetMapping("/userInfo")
+    public Result<User> userInfo() {
+        Map<String, Object> map = ThreadLocalUtil.get();
+        String username = (String) map.get("username");
+        User user = userService.findByUsername(username);
+        return Result.success(user);
+    }
+
+    // TODO: 用户自己修改自己的个人信息
+    @PutMapping("/update")
+    public Result update(@RequestBody @Validated User user) {
+        // 更新用户信息
+        userService.updateInfo(user);
+
+        // 更新后再查一次数据库，确保返回的是最新数据
+        User updatedUser = userService.findByUsername(user.getUsername());
+
+        // 返回标准响应格式
+        return new Result<>(0, "信息更新成功", updatedUser);
+    }
+
+    // TODO: 用户自己修改自己的密码
+    @PatchMapping("/updatePwd")
+    public Result updatePwd(@RequestBody Map<String, String> params) {
+        // 1. 校验参数
+        String oldPwd = params.get("old_pwd");
+        String newPwd = params.get("new_pwd");
+        String rePwd = params.get("re_pwd");
+
+        if (!StringUtils.hasLength(oldPwd) || !StringUtils.hasLength(newPwd) || !StringUtils.hasLength(rePwd)) {
+            return Result.error("参数不能为空");
+        }
+
+        // 原密码是否正确
+        // 调用userService根据用户名拿到原密码，再和old_pwd比对
+        Map<String, Object> map = ThreadLocalUtil.get();
+        String username = (String) map.get("username");
+        User user = userService.findByUsername(username);
+        if (!user.getPassword().equals(Md5Util.getMD5String(oldPwd))) {
+            return Result.error("原密码错误");
+        }
+
+        // newPwd 和 oldPwd是否一样
+        if (!rePwd.equals(newPwd)) {
+            return Result.error("两次密码不一致");
+        }
+
+        // 2. 更新密码
+        userService.updatePwd(newPwd);
+
+        return Result.success("密码更新成功，请重新登录");
+    }
+
+    // TODO: 获取用户自己更新头像
+    @PostMapping("/updateAvatar")
+    public Result updateAvatar(@RequestParam("avatar") MultipartFile file) throws IOException {
+        String avatarUrl = userService.updateAvatar(file);
+        String fullUrl = "http://localhost:8080" + avatarUrl;
+        return Result.success(fullUrl);
+    }
+
+
 }

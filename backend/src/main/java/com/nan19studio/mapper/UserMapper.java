@@ -21,4 +21,19 @@ public interface UserMapper {
     // 更新用户登录时间
     @Update("update user set last_login=now() where id=#{userId}")
     void updateLoginTime(Long userId);
+
+    // 更新用户信息
+    @Update("update user set email=#{email}, phone=#{phone}, nickname=#{nickname}, update_time=now() " +
+            "where id=#{id}")
+    void updateInfo(User user);
+
+    // 更新用户密码
+    @Update("update user set password=#{md5String}, update_time=now() " +
+            "where id=#{id}")
+    void updatePwd(String md5String, Integer id);
+
+    // 更新用户头像
+    @Update("update user set avatar=#{avatarPath}, update_time=now() " +
+            "where id=#{id}")
+    void updateAvatar(String avatarPath, Integer id);
 }
