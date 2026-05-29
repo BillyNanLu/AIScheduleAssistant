@@ -24,26 +24,22 @@ import Footer from "@/components/layout/Footer.vue";
 </template>
 
 <style scoped>
-/* 全局重置：禁止 body/html 滚动 */
 :global(html),
 :global(body) {
-  height: 100%;
-  overflow: hidden;
   margin: 0;
   padding: 0;
 }
 
-/* 整个布局容器：占满视口，纵向弹性布局，不溢出 */
 .layout-wrapper {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  overflow: hidden;
+  min-height: 100vh;
 }
 
-/* Header：固定高度，不压缩；!important 覆盖 el-header 默认的 padding */
+/* header 吸顶，内容滚动时始终可见 */
 .layout-header {
-  flex-shrink: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
   height: 64px !important;
   background-color: #fff;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
@@ -60,16 +56,11 @@ import Footer from "@/components/layout/Footer.vue";
   height: 64px;
 }
 
-/* Main：撑满剩余空间，自身独立滚动 */
+/* 补偿 fixed header 占据的 64px */
 .layout-main {
-  flex: 1;
-  overflow-y: auto;
-  overflow-x: hidden;
-  -webkit-overflow-scrolling: touch;
-  will-change: scroll-position;
+  padding-top: 64px;
 }
 
-/* Footer：不压缩，自然高度 */
 .layout-footer-wrap {
   flex-shrink: 0;
 }
