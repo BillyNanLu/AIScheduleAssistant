@@ -1,6 +1,6 @@
 <script setup>
-import { ref } from 'vue'
-import { scheduleAddService } from '@/api/schedule.js'
+import { ref, onMounted } from 'vue'
+import { scheduleAddService, scheduleListService } from '@/api/schedule.js'
 import {ElMessage} from "element-plus";
 
 import VoiceInput from '@/components/planning/VoiceInput.vue'
@@ -8,20 +8,7 @@ import CalendarPanel from '@/components/planning/CalendarPanel.vue'
 import EventSidebar from '@/components/planning/EventSidebar.vue'
 import ParsePreview from '@/components/planning/ParsePreview.vue'
 
-const events = ref([
-  {
-    id: 1,
-    title: '软件工程课程设计',
-    start: '2026-05-30',
-    time: '14:30'
-  },
-  {
-    id: 2,
-    title: '项目开发会议',
-    start: '2026-06-02',
-    time: '11:00'
-  }
-])
+const events = ref([])
 
 const previewEvent = ref(null)
 
@@ -29,6 +16,34 @@ const handleParseEvent = (event) => {
   previewEvent.value = event
 }
 
+// 拉取全部日程
+const loadEvents = async () => {
+  try {
+    const res = await scheduleListService()
+    console.log(res.code)
+    if (res.code === 0) {
+      events.value = res.data.map(item => {
+        const d = new Date(item.startTime)
+        const hasTime = d.getHours() || d.getMinutes()
+        return {
+          id: item.id,
+          title: item.title,
+          start: item.startTime,
+          time: hasTime
+              ? `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
+              : ''
+        }
+      })
+    } else {
+      ElMessage.error(res.message || '加载日程失败')
+    }
+  } catch (error) {
+    console.log(error)
+    ElMessage.error('加载日程失败')
+  }
+}
+
+// 新建日程
 const addEvent = async (event) => {
   try {
     const d = new Date(event.start)
@@ -45,12 +60,7 @@ const addEvent = async (event) => {
     })
     if (res.code === 0) {
       // 同步更新本地日历
-      events.value.push({
-        id: res.data?.id ?? Date.now(),
-        title: event.title,
-        start: isValidDate ? d.toISOString() : event.start,
-        time
-      })
+      await loadEvents()
       ElMessage.success('新建成功')
       previewEvent.value = null
     } else {
@@ -62,6 +72,10 @@ const addEvent = async (event) => {
     ElMessage.error(error)
   }
 }
+
+onMounted(() => {
+  loadEvents()
+})
 </script>
 
 <template>

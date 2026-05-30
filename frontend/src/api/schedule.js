@@ -17,3 +17,8 @@ export const scheduleAddService = (addData) => {
     }
     return request.post('/schedule/add', params)
 }
+
+// TODO: 提供调用获取当前用户全部日程接口的函数
+export const scheduleListService = () => {
+    return request.get('/schedule/list')
+}
