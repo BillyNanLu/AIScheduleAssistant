@@ -42,4 +42,12 @@ public class ScheduleController {
         Schedule schedule = scheduleService.getScheduleList(id);
         return Result.success(schedule);
     }
+
+    // TODO: Get specific day's schedule （当前用户今日日程）
+    @GetMapping("/specific")
+    public Result<Schedule> specific(String specific) {
+        Schedule schedule = scheduleService.getSpecificScheduleList(specific);
+        return Result.success(schedule);
+    }
+
 }

@@ -18,4 +18,8 @@ public interface ScheduleMapper {
     // 根据用户id查询日程
     @Select("select * from schedule where user_id = #{id} order by start_time desc")
     Schedule findByUserId(Integer id);
+
+    // 根据用户id和日期查询日程
+    @Select("select * from schedule where user_id = #{id} and DATE(start_time) = #{specific} order by start_time desc")
+    Schedule findBySpecificDay(Integer id, String specific);
 }

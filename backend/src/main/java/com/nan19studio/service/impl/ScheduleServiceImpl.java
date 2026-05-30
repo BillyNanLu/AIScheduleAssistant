@@ -27,4 +27,12 @@ public class ScheduleServiceImpl implements ScheduleService {
         Schedule schedule = scheduleMapper.findByUserId(id);
         return schedule;
     }
+
+    @Override
+    public Schedule getSpecificScheduleList(String specific) {
+        Map<String, Object> map = ThreadLocalUtil.get();
+        Integer id = (Integer) map.get("id");
+        Schedule schedule = scheduleMapper.findBySpecificDay(id, specific);
+        return schedule;
+    }
 }

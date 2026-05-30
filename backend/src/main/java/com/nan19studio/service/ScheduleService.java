@@ -12,4 +12,7 @@ public interface ScheduleService {
 
     // TODO: 获取日程列表（当前用户全部日程）
     Schedule getScheduleList(Integer id);
+
+    // TODO: 获取特定日期的日程列表（当前用户今日日程）
+    Schedule getSpecificScheduleList(String specific);
 }
