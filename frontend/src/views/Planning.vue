@@ -1,5 +1,7 @@
 <script setup>
 import { ref } from 'vue'
+import { scheduleAddService } from '@/api/schedule.js'
+import {ElMessage} from "element-plus";
 
 import VoiceInput from '@/components/planning/VoiceInput.vue'
 import CalendarPanel from '@/components/planning/CalendarPanel.vue'
@@ -27,22 +29,38 @@ const handleParseEvent = (event) => {
   previewEvent.value = event
 }
 
-const addEvent = (event) => {
-  const d = new Date(event.start)
-  const isValidDate = !isNaN(d.getTime())
+const addEvent = async (event) => {
+  try {
+    const d = new Date(event.start)
+    const isValidDate = !isNaN(d.getTime())
 
-  // 有具体时间才提取，否则留空
-  const time = isValidDate && (d.getHours() || d.getMinutes())
-      ? `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
-      : ''
+    // 有具体时间才提取，否则留空
+    const time = isValidDate && (d.getHours() || d.getMinutes())
+        ? `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
+        : ''
 
-  events.value.push({
-    id: Date.now(),
-    title: event.title,
-    start: isValidDate ? d.toISOString() : event.start,
-    time
-  })
-  previewEvent.value = null
+    const res = await scheduleAddService({
+      title: event.title,
+      startTime: isValidDate ? d.toISOString() : event.start
+    })
+    if (res.code === 0) {
+      // 同步更新本地日历
+      events.value.push({
+        id: res.data?.id ?? Date.now(),
+        title: event.title,
+        start: isValidDate ? d.toISOString() : event.start,
+        time
+      })
+      ElMessage.success('新建成功')
+      previewEvent.value = null
+    } else {
+      console.log(res.message)
+      ElMessage.error(res.message || '新建失败，请重试')
+    }
+  } catch (error) {
+    console.log(error)
+    ElMessage.error(error)
+  }
 }
 </script>
 
