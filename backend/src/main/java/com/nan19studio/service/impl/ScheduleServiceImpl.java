@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -23,9 +24,8 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
-    public Schedule getScheduleList(Integer id) {
-        Schedule schedule = scheduleMapper.findByUserId(id);
-        return schedule;
+    public List<Schedule> getScheduleList(Integer id) {
+        return scheduleMapper.findByUserId(id);
     }
 
     @Override

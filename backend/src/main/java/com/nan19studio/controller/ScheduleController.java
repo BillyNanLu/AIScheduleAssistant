@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -36,11 +37,11 @@ public class ScheduleController {
 
     // TODO: Get schedule list（当前用户全部日程）
     @GetMapping("/list")
-    public Result<Schedule> list() {
+    public Result<List<Schedule>> list() {
         Map<String, Object> map = ThreadLocalUtil.get();
         Integer id = (Integer) map.get("id");
-        Schedule schedule = scheduleService.getScheduleList(id);
-        return Result.success(schedule);
+        List<Schedule> schedules = scheduleService.getScheduleList(id);
+        return Result.success(schedules);
     }
 
     // TODO: Get specific day's schedule （当前用户今日日程）
