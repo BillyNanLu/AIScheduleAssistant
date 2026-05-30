@@ -1,7 +1,31 @@
 <script setup>
+import { ref } from 'vue'
+
 import VoiceInput from '@/components/planning/VoiceInput.vue'
 import CalendarPanel from '@/components/planning/CalendarPanel.vue'
 import EventSidebar from '@/components/planning/EventSidebar.vue'
+
+const events = ref([
+  {
+    id: 1,
+    title: '软件工程课程设计',
+    start: '2026-05-30',
+    time: '14:30'
+  },
+  {
+    id: 2,
+    title: '项目开发会议',
+    start: '2026-06-02',
+    time: '11:00'
+  }
+])
+
+const addEvent = (event) => {
+  events.value.push({
+    id: Date.now(),
+    ...event
+  })
+}
 </script>
 
 <template>
@@ -13,9 +37,14 @@ import EventSidebar from '@/components/planning/EventSidebar.vue'
     <!-- 主体区域 -->
     <div class="planning-content">
 
-      <CalendarPanel />
+      <CalendarPanel
+          :events="events"
+          @add-event="addEvent"
+      />
 
-      <EventSidebar />
+      <EventSidebar
+          :events="events"
+      />
 
     </div>
 

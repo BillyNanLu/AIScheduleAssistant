@@ -1,20 +1,13 @@
 <script setup>
 import { ref } from 'vue'
 
-const events = ref([
-  {
-    title: '软件工程课程设计',
-    time: '14:00'
-  },
-  {
-    title: '项目开发会议',
-    time: '19:00'
-  },
-  {
-    title: '完成周报',
-    time: '21:00'
+const props = defineProps({
+  events:{
+    type:Array,
+    default:()=>[]
   }
-])
+})
+
 </script>
 
 <template>
@@ -27,7 +20,7 @@ const events = ref([
 
     <div
         class="event-item"
-        v-for="item in events"
+        v-for="item in props.events"
         :key="item.title"
     >
 
