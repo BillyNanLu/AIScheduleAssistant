@@ -34,4 +34,12 @@ public class ScheduleController {
         return Result.success("添加成功");
     }
 
+    // TODO: Get schedule list（当前用户全部日程）
+    @GetMapping("/list")
+    public Result<Schedule> list() {
+        Map<String, Object> map = ThreadLocalUtil.get();
+        Integer id = (Integer) map.get("id");
+        Schedule schedule = scheduleService.getScheduleList(id);
+        return Result.success(schedule);
+    }
 }

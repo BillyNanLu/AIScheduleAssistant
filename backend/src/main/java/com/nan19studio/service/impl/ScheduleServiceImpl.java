@@ -22,4 +22,9 @@ public class ScheduleServiceImpl implements ScheduleService {
         scheduleMapper.add(id, title, description, startTime, endTime, reminderTime);
     }
 
+    @Override
+    public Schedule getScheduleList(Integer id) {
+        Schedule schedule = scheduleMapper.findByUserId(id);
+        return schedule;
+    }
 }

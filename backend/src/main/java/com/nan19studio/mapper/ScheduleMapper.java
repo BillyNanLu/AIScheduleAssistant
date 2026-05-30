@@ -15,4 +15,7 @@ public interface ScheduleMapper {
             "values (#{id}, #{title}, #{description}, #{startTime}, #{endTime}, #{reminderTime}, now(), now())")
     void add(Integer id, String title, String description, LocalDateTime startTime, LocalDateTime endTime, LocalDateTime reminderTime);
 
+    // 根据用户id查询日程
+    @Select("select * from schedule where user_id = #{id} order by start_time desc")
+    Schedule findByUserId(Integer id);
 }
