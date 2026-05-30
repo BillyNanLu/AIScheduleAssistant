@@ -4,6 +4,7 @@ import { ref } from 'vue'
 import VoiceInput from '@/components/planning/VoiceInput.vue'
 import CalendarPanel from '@/components/planning/CalendarPanel.vue'
 import EventSidebar from '@/components/planning/EventSidebar.vue'
+import ParsePreview from '@/components/planning/ParsePreview.vue'
 
 const events = ref([
   {
@@ -20,11 +21,28 @@ const events = ref([
   }
 ])
 
+const previewEvent = ref(null)
+
+const handleParseEvent = (event) => {
+  previewEvent.value = event
+}
+
 const addEvent = (event) => {
+  const d = new Date(event.start)
+  const isValidDate = !isNaN(d.getTime())
+
+  // 有具体时间才提取，否则留空
+  const time = isValidDate && (d.getHours() || d.getMinutes())
+      ? `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
+      : ''
+
   events.value.push({
     id: Date.now(),
-    ...event
+    title: event.title,
+    start: isValidDate ? d.toISOString() : event.start,
+    time
   })
+  previewEvent.value = null
 }
 </script>
 
@@ -32,7 +50,16 @@ const addEvent = (event) => {
   <div class="planning-page">
 
     <!-- AI输入区域 -->
-    <VoiceInput />
+    <VoiceInput
+        @parse-event="handleParseEvent"
+    />
+
+    <!-- AI解析结果  -->
+    <ParsePreview
+        :event="previewEvent"
+        @confirm="addEvent"
+        @cancel="previewEvent = null"
+    />
 
     <!-- 主体区域 -->
     <div class="planning-content">

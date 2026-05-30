@@ -1,7 +1,26 @@
 <script setup>
 import { ref } from 'vue'
+import { ElMessage } from 'element-plus'
+import { parseScheduleText } from '@/utils/scheduleParser'
 
 const inputText = ref('')
+
+const emit = defineEmits([
+  'parse-event'
+])
+
+const handleParse = () => {
+
+  const result = parseScheduleText(inputText.value)
+
+  if (result.error) {
+    ElMessage.warning(result.error)   // 页面顶部提示
+    return
+  }
+
+  emit('parse-event', result)
+
+}
 </script>
 
 <template>
@@ -13,8 +32,7 @@ const inputText = ref('')
     </div>
 
     <div class="subtitle">
-      试试说一句：
-      “明天下午三点提醒我开项目会议”
+      试试说一句： “明天下午三点提醒我开项目会议”
     </div>
 
     <div class="input-area">
@@ -28,8 +46,9 @@ const inputText = ref('')
       <el-button
           type="primary"
           size="large"
+          @click="handleParse"
       >
-        🎤 开始录音
+        🎤 开始录音 ｜ AI解析
       </el-button>
 
     </div>
