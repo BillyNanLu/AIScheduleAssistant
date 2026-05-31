@@ -1,10 +1,8 @@
 <script setup>
-import { computed, ref } from 'vue'
-
+import { computed, ref, onMounted } from 'vue'
 import {useTokenStore} from '@/stores/token.js'
-
+import { scheduleSpecificService } from '@/api/schedule.js'
 import { ElCard, ElEmpty, ElButton, ElIcon } from 'element-plus'
-
 import { Timer, Calendar } from '@element-plus/icons-vue'
 
 const tokenStore = useTokenStore()
@@ -12,25 +10,38 @@ const tokenStore = useTokenStore()
 // 登录状态
 const isLogin = computed(() => !!tokenStore.token)
 
-// mock 数据（后续接后端接口）
-const todayEvents = ref([
-  {
-    title: '软件工程课程设计讨论',
-    start_time: '14:00 - 15:30',
-  },
-  {
-    title: '项目开发会议',
-    start_time: '19:00 - 20:00',
-  },
-  {
-    title: '完成 AI Schedule Assistant 首页开发',
-    start_time: '21:00 - 23:00',
+const todayEvents = ref([])
+
+// 获取今日日期 "yyyy-MM-dd"
+const getTodayStr = () => {
+  const d = new Date()
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`
+}
+
+const loadTodayEvents = async () => {
+  if (!isLogin.value) return
+  const res = await scheduleSpecificService(getTodayStr())
+  if (res.code === 0) {
+    todayEvents.value = res.data ?? []
   }
-])
+}
+
+const completedCount = computed(() =>
+    todayEvents.value.filter(e => e.status === 1).length
+)
+
+const completionRate = computed(() => {
+  if (todayEvents.value.length === 0) return '0%'
+  return Math.round(completedCount.value / todayEvents.value.length * 100) + '%'
+})
 
 const handleGoPlanning = () => {
   window.location.href = '/planning'
 }
+
+onMounted(() => {
+  loadTodayEvents()
+})
 </script>
 
 <template>
@@ -42,36 +53,24 @@ const handleGoPlanning = () => {
     </div>
 
     <el-card class="today-card">
-
       <!-- 已登录 -->
       <template v-if="isLogin">
-
         <div class="overview-top">
-
           <div class="overview-item">
-
             <div class="overview-value">
               {{ todayEvents.length }}
             </div>
-
             <div class="overview-label">今日任务</div>
-
           </div>
 
           <div class="overview-item">
-
-            <div class="overview-value">2</div>
-
+            <div class="overview-value">{{ completedCount }}</div>
             <div class="overview-label">已完成</div>
-
           </div>
 
           <div class="overview-item">
-
-            <div class="overview-value">66.7%</div>
-
+            <div class="overview-value">{{ completionRate }}</div>
             <div class="overview-label">日程完成度</div>
-
           </div>
 
         </div>
@@ -85,18 +84,14 @@ const handleGoPlanning = () => {
           >
 
             <div class="event-left">
-
               <div class="event-title">
                 {{ item.title }}
               </div>
-
               <div class="event-time">
-
                 <el-icon>
                   <Timer />
                 </el-icon>
-
-                {{ item.start_time }}
+                {{ item.startTime }}
 
               </div>
 
