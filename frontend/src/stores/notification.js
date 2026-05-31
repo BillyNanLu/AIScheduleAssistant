@@ -4,6 +4,7 @@ import {computed, ref} from 'vue'
 export const useNotificationStore = defineStore('notification', () => {
 
     const notifications = ref([])
+    const notifiedIds = ref([])
 
     const addNotification = (msg) => {
         notifications.value.unshift(msg)
@@ -20,7 +21,6 @@ export const useNotificationStore = defineStore('notification', () => {
     }
 
     const markAsRead = (id) => {
-
         const target =
             notifications.value.find(
                 item => item.id === id
@@ -31,12 +31,22 @@ export const useNotificationStore = defineStore('notification', () => {
         }
     }
 
+    const hasNotified = (scheduleId) => {
+        return notifiedIds.value.includes(scheduleId)
+    }
+
+    const markNotified = (scheduleId) => {
+        notifiedIds.value.push(scheduleId)
+    }
+
     return {
         notifications,
         addNotification,
         unreadCount,
         setNotifications,
-        markAsRead
+        markAsRead,
+        hasNotified,
+        markNotified
     }
 
 }, {persist: true})

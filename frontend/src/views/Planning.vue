@@ -1,8 +1,8 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { showNotification } from '@/utils/notification'
 import { useNotificationStore } from '@/stores/notification.js'
+import { checkUpcomingSchedules } from '@/utils/reminder.js'
 import { scheduleAddService, scheduleListService } from '@/api/schedule.js'
 import {ElMessage} from "element-plus";
 
@@ -100,39 +100,20 @@ const addEvent = async (event) => {
   }
 }
 
-onMounted(() => {
-
-  setTimeout(() => {
-
-    notificationStore.addNotification({
-
-      id: Date.now(),
-
-      title: '项目会议即将开始',
-
-      content: '项目会议将在30分钟后开始',
-
-      isRead: false
-
-    })
-
-    showNotification(
-
-        '项目会议即将开始',
-
-        '项目会议将在30分钟后开始',
-        () => {
-
-          router.push('/notifications')
-
-        }
-
-    )
-
-  }, 10000)
-
-  loadEvents()
+onMounted(async () => {
+  await loadEvents()
+  checkUpcomingSchedules(
+      events.value,
+      notificationStore
+  )
 })
+
+setInterval(() => {
+  checkUpcomingSchedules(
+      events.value,
+      notificationStore
+  )
+}, 60000)
 </script>
 
 <template>
