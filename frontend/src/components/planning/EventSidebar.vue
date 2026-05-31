@@ -3,59 +3,13 @@ import { ref, computed } from 'vue'
 import { ElTag, ElButton, ElTabs, ElTabPane, ElDialog, ElForm, ElFormItem, ElInput, ElDatePicker, ElCheckbox, ElMessageBox, ElMessage } from 'element-plus'
 import { Edit, Delete, Check } from '@element-plus/icons-vue'
 
-// ── mock 数据 ─────────────────────────────────────────
-const events = ref([
-  {
-    id: 1,
-    title: '完成一题 Leetcode',
-    description: '每日算法练习',
-    startTime: '2026-05-31 15:00:00',
-    endTime: null,
-    status: 0,
-    createTime: '2026-05-28 09:00:00',
-    updateTime: '2026-05-28 09:00:00'
-  },
-  {
-    id: 2,
-    title: '项目组例会',
-    description: '同步本周进度',
-    startTime: '2026-05-31 10:00:00',
-    endTime: '2026-05-31 11:00:00',
-    status: 1,
-    createTime: '2026-05-25 08:00:00',
-    updateTime: '2026-05-31 11:05:00'
-  },
-  {
-    id: 3,
-    title: '练习面试自我介绍',
-    description: '1分钟和3分钟版本',
-    startTime: '2026-05-29 09:00:00',
-    endTime: null,
-    status: 1,
-    createTime: '2026-05-20 10:00:00',
-    updateTime: '2026-05-29 10:30:00'
-  },
-  {
-    id: 4,
-    title: '阅读《Clean Code》第三章',
-    description: null,
-    startTime: '2026-06-02 20:00:00',
-    endTime: null,
-    status: 0,
-    createTime: '2026-05-30 21:00:00',
-    updateTime: '2026-05-30 21:00:00'
-  },
-  {
-    id: 5,
-    title: '提交软件工程报告',
-    description: '截止日期前提交',
-    startTime: '2026-05-31 23:59:00',
-    endTime: null,
-    status: 0,
-    createTime: '2026-05-01 09:00:00',
-    updateTime: '2026-05-01 09:00:00'
+// 接受父组件传入的props数据
+const props = defineProps({
+  events: {
+    type: Array,
+    default: () => []
   }
-])
+})
 
 // ── Tab ────────────────────────────────────────────────
 const activeTab = ref('all')
@@ -64,10 +18,10 @@ const today = new Date().toISOString().slice(0, 10)
 
 const byStartDesc = (a, b) => new Date(b.startTime) - new Date(a.startTime)
 
-const allEvents    = computed(() => [...events.value].sort(byStartDesc))
-const todayEvents  = computed(() => events.value.filter(e => e.startTime.slice(0, 10) === today).sort(byStartDesc))
-const todoEvents   = computed(() => events.value.filter(e => e.status === 0).sort(byStartDesc))
-const doneEvents   = computed(() => events.value.filter(e => e.status === 1).sort(byStartDesc))
+const allEvents   = computed(() => [...props.events].sort(byStartDesc))
+const todayEvents = computed(() => props.events.filter(e => e.startTime.slice(0, 10) === today).sort(byStartDesc))
+const todoEvents  = computed(() => props.events.filter(e => e.status === 0).sort(byStartDesc))
+const doneEvents  = computed(() => props.events.filter(e => e.status === 1).sort(byStartDesc))
 
 const tabList = [
   { name: 'all',   label: '全部',   data: allEvents   },

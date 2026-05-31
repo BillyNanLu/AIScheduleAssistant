@@ -28,7 +28,12 @@ const loadEvents = async () => {
         return {
           id: item.id,
           title: item.title,
-          start: item.startTime,
+          start: item.startTime,        // FullCalendar 用
+          startTime: item.startTime,    // EventSidebar 用（传给子组件）
+          endTime: item.endTime,
+          status: item.status,
+          updateTime: item.updateTime,
+          createTime: item.createTime,
           time: hasTime
               ? `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
               : ''
