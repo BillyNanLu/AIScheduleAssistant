@@ -5,6 +5,10 @@ export const useNotificationStore = defineStore('notification', () => {
 
     const notifications = ref([])
 
+    const addNotification = (msg) => {
+        notifications.value.unshift(msg)
+    }
+
     const unreadCount =
         computed(() => {
 
@@ -29,6 +33,7 @@ export const useNotificationStore = defineStore('notification', () => {
 
     return {
         notifications,
+        addNotification,
         unreadCount,
         setNotifications,
         markAsRead

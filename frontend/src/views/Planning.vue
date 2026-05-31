@@ -1,5 +1,8 @@
 <script setup>
 import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { showNotification } from '@/utils/notification'
+import { useNotificationStore } from '@/stores/notification.js'
 import { scheduleAddService, scheduleListService } from '@/api/schedule.js'
 import {ElMessage} from "element-plus";
 
@@ -7,6 +10,9 @@ import VoiceInput from '@/components/planning/VoiceInput.vue'
 import CalendarPanel from '@/components/planning/CalendarPanel.vue'
 import EventSidebar from '@/components/planning/EventSidebar.vue'
 import ParsePreview from '@/components/planning/ParsePreview.vue'
+
+const notificationStore = useNotificationStore()
+const router = useRouter()
 
 const events = ref([])
 
@@ -95,6 +101,36 @@ const addEvent = async (event) => {
 }
 
 onMounted(() => {
+
+  setTimeout(() => {
+
+    notificationStore.addNotification({
+
+      id: Date.now(),
+
+      title: '项目会议即将开始',
+
+      content: '项目会议将在30分钟后开始',
+
+      isRead: false
+
+    })
+
+    showNotification(
+
+        '项目会议即将开始',
+
+        '项目会议将在30分钟后开始',
+        () => {
+
+          router.push('/notifications')
+
+        }
+
+    )
+
+  }, 10000)
+
   loadEvents()
 })
 </script>

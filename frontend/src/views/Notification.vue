@@ -5,6 +5,19 @@ import NotificationDetailDialog from '@/components/notification/NotificationDeta
 
 const notificationStore = useNotificationStore()
 
+import { showNotification } from '@/utils/notification'
+
+const testNotification = () => {
+
+  showNotification(
+      '日程提醒',
+      '项目会议将在30分钟后开始',
+      () => {
+        router.push('/notifications')
+      }
+  )
+}
+
 onMounted(() => {
 
   if ( notificationStore.notifications.length === 0) {

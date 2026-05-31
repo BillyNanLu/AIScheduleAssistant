@@ -1,7 +1,14 @@
 <script setup>
+import { onMounted } from 'vue'
 import { ElHeader } from 'element-plus'
+import { requestNotificationPermission } from '@/utils/notification'
+
 import Header from "@/components/layout/Header.vue";
 import Footer from "@/components/layout/Footer.vue";
+
+onMounted(async () => {
+  await requestNotificationPermission()
+})
 </script>
 
 <template>
