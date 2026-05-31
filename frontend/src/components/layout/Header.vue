@@ -34,8 +34,6 @@
   const setActiveMenuByRoute = (path) => {
     if (path.includes('/planning')) {
       activeMenu.value = 'planning'
-    } else if (path.includes('/ai-chat')) {
-      activeMenu.value = 'ai-chat'
     } else if (path.includes('/notifications')) {
       activeMenu.value = 'notifications'
     } else if (path.includes('/profile')) {
@@ -98,9 +96,6 @@
       case 'planning':
         router.push('/planning')
         break
-      case 'chat':
-        router.push('/chat')
-        break
     }
   }
 
@@ -157,10 +152,6 @@
       <el-menu-item index="planning">
         <el-icon><Calendar /></el-icon>
         <span>规划</span>
-      </el-menu-item>
-      <el-menu-item index="chat">
-        <el-icon><Message /></el-icon>
-        <span>对话</span>
       </el-menu-item>
     </el-menu>
 

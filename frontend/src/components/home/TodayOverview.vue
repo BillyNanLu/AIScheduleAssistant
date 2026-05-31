@@ -3,18 +3,9 @@ import { computed, ref } from 'vue'
 
 import {useTokenStore} from '@/stores/token.js'
 
-import {
-  ElCard,
-  ElTag,
-  ElEmpty,
-  ElButton,
-  ElIcon
-} from 'element-plus'
+import { ElCard, ElEmpty, ElButton, ElIcon } from 'element-plus'
 
-import {
-  Timer,
-  Calendar
-} from '@element-plus/icons-vue'
+import { Timer, Calendar } from '@element-plus/icons-vue'
 
 const tokenStore = useTokenStore()
 
@@ -25,18 +16,15 @@ const isLogin = computed(() => !!tokenStore.token)
 const todayEvents = ref([
   {
     title: '软件工程课程设计讨论',
-    time: '14:00 - 15:30',
-    type: '学习'
+    start_time: '14:00 - 15:30',
   },
   {
     title: '项目开发会议',
-    time: '19:00 - 20:00',
-    type: '项目'
+    start_time: '19:00 - 20:00',
   },
   {
     title: '完成 AI Schedule Assistant 首页开发',
-    time: '21:00 - 23:00',
-    type: '开发'
+    start_time: '21:00 - 23:00',
   }
 ])
 
@@ -74,13 +62,13 @@ const handleGoPlanning = () => {
 
             <div class="overview-value">2</div>
 
-            <div class="overview-label">待提醒</div>
+            <div class="overview-label">已完成</div>
 
           </div>
 
           <div class="overview-item">
 
-            <div class="overview-value">85%</div>
+            <div class="overview-value">66.7%</div>
 
             <div class="overview-label">日程完成度</div>
 
@@ -108,15 +96,11 @@ const handleGoPlanning = () => {
                   <Timer />
                 </el-icon>
 
-                {{ item.time }}
+                {{ item.start_time }}
 
               </div>
 
             </div>
-
-            <el-tag round>
-              {{ item.type }}
-            </el-tag>
 
           </div>
 

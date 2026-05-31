@@ -11,6 +11,7 @@ import NotFound from "@/views/NotFound.vue"; // 404
 import Home from "@/views/Home.vue";
 import Planning from "@/views/Planning.vue";
 import Notification from "@/views/Notification.vue";
+import Profile from "@/views/Profile.vue";
 
 // 定义路由关系
 const routes = [
@@ -22,7 +23,8 @@ const routes = [
         children: [
             { path: '/home', component: Home },
             { path: '/planning', component: Planning, meta: { requiresAuth: true} },
-            { path: '/notifications', component: Notification, meta: { requiresAuth: true } }
+            { path: '/notifications', component: Notification, meta: { requiresAuth: true } },
+            { path: '/profile', component: Profile, meta: { requiresAuth: true } },
         ]
     },
     // 404
