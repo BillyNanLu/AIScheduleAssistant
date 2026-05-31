@@ -1,46 +1,91 @@
 <script setup>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
+import NotificationDetailDialog from '@/components/notification/NotificationDetailDialog.vue'
 
 const notifications = ref([
   {
-    id:1,
-    title:'项目会议即将开始',
-    content:'项目会议将在30分钟后开始',
-    time:'5分钟前',
-    status:0
+    id: 1,
+    title: '项目会议即将开始',
+    content: '项目会议将在30分钟后开始',
+    time: '5分钟前',
+    isRead: false,
+    schedule: {
+      id: 101,
+      title: '项目会议',
+      description: '讨论AI Schedule Assistant开发进度',
+      startTime: '2026-06-01 14:00',
+      endTime: '2026-06-01 15:00',
+      status: 0
+    }
   },
   {
-    id:2,
-    title:'软件工程答辩即将开始',
-    content:'软件工程答辩将在明天09:00开始',
-    time:'1小时前',
-    status:0
+    id: 2,
+    title: '软件工程答辩即将开始',
+    content: '软件工程答辩将在明天09:00开始',
+    time: '1小时前',
+    isRead: false,
+    schedule: {
+      id: 102,
+      title: '软件工程答辩',
+      description: '毕业设计最终答辩',
+      startTime: '2026-06-02 09:00',
+      endTime: '2026-06-02 10:00',
+      status: 0
+    }
   }
-
 ])
+
+const dialogVisible = ref(false)
+const currentSchedule = ref(null)
+
+const unreadCount = computed(() => {
+  return notifications.value.filter(item => !item.isRead).length
+})
+
+const handleOpen = (item) => {
+  currentSchedule.value = item.schedule
+  dialogVisible.value = true
+
+  // 标记已读
+  item.isRead = true
+}
 </script>
 
 <template>
   <div class="notification-page">
 
     <div class="page-header">
-      <h2>消息中心</h2>
+      <div>
+        <h2>消息中心</h2>
+        <p class="sub-title">
+          未读消息 {{ unreadCount }} 条
+        </p>
+      </div>
+
       <span>
         共 {{ notifications.length }} 条消息
       </span>
     </div>
 
     <div class="message-list">
+
       <div
-          class="message-card"
           v-for="item in notifications"
           :key="item.id"
+          class="message-card"
+          :class="{ read: item.isRead }"
+          @click="handleOpen(item)"
       >
+
         <div class="left">
-          <div class="dot"/>
+          <div
+              v-if="!item.isRead"
+              class="dot"
+          />
         </div>
 
         <div class="content">
+
           <div class="title">
             {{ item.title }}
           </div>
@@ -52,12 +97,19 @@ const notifications = ref([
           <div class="time">
             {{ item.time }}
           </div>
+
         </div>
+
       </div>
+
     </div>
 
-  </div>
+    <NotificationDetailDialog
+        v-model:visible="dialogVisible"
+        :schedule="currentSchedule"
+    />
 
+  </div>
 </template>
 
 <style scoped>
@@ -79,6 +131,12 @@ const notifications = ref([
   color: #303133;
 }
 
+.sub-title {
+  margin-top: 8px;
+  color: #909399;
+  font-size: 14px;
+}
+
 .page-header span {
   color: #909399;
 }
@@ -90,19 +148,29 @@ const notifications = ref([
 }
 
 .message-card {
-  background: white;
+  background: #fff;
   border-radius: 18px;
   padding: 20px;
   display: flex;
   gap: 16px;
   cursor: pointer;
   transition: all .3s;
+  border: 1px solid #ebeef5;
 }
 
 .message-card:hover {
   transform: translateY(-2px);
-  box-shadow:
-      0 8px 24px rgba(0,0,0,.08);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .08);
+}
+
+.message-card.read {
+  opacity: .7;
+}
+
+.left {
+  width: 16px;
+  display: flex;
+  justify-content: center;
 }
 
 .dot {
@@ -110,7 +178,11 @@ const notifications = ref([
   height: 12px;
   background: #f56c6c;
   border-radius: 50%;
-  margin-top: 8px;
+  margin-top: 6px;
+}
+
+.content {
+  flex: 1;
 }
 
 .title {
@@ -122,6 +194,7 @@ const notifications = ref([
 .desc {
   margin-top: 8px;
   color: #606266;
+  line-height: 1.6;
 }
 
 .time {
