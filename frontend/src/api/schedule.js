@@ -13,7 +13,10 @@ export const scheduleAddService = (addData) => {
             const local = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}:${String(d.getSeconds()).padStart(2,'0')}`
             value = local
         }
-        params.append(key, value)
+        // 跳过 null / undefined / 空字符串
+        if (value !== null && value !== undefined && value !== '') {
+            params.append(key, value)
+        }
     }
     return request.post('/schedule/add', params)
 }

@@ -51,6 +51,8 @@ const loadEvents = async () => {
 // 新建日程
 const addEvent = async (event) => {
   try {
+    // 兼容 ParsePreview（传 start）和 EventDialog（传 startTime）两种来源
+    const rawTime = event.startTime || event.start
     const d = new Date(event.start)
     const isValidDate = !isNaN(d.getTime())
 
@@ -61,7 +63,10 @@ const addEvent = async (event) => {
 
     const res = await scheduleAddService({
       title: event.title,
-      startTime: isValidDate ? d.toISOString() : event.start
+      // startTime: isValidDate ? d.toISOString() : event.start
+      description: event.description || null,
+      startTime: isValidDate ? rawTime : null,
+      endTime: event.endTime || null
     })
     if (res.code === 0) {
       // 同步更新本地日历
