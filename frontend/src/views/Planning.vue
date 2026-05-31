@@ -28,8 +28,9 @@ const loadEvents = async () => {
         return {
           id: item.id,
           title: item.title,
-          start: item.startTime,        // FullCalendar 用
-          startTime: item.startTime,    // EventSidebar 用（传给子组件）
+          start: item.startTime?.replace(' ', 'T'),        // FullCalendar 用
+          end: item.endTime ? item.endTime.replace(' ', 'T') : item.startTime?.replace(' ', 'T'),   // 无结束时间 → end=start，不跨天
+          startTime: item.startTime,                       // EventSidebar 用（传给子组件）
           endTime: item.endTime,
           status: item.status,
           updateTime: item.updateTime,
@@ -48,11 +49,21 @@ const loadEvents = async () => {
   }
 }
 
+// 加在 addEvent 函数之前
+const toLocalStr = (val) => {
+  if (!val) return null
+  const d = new Date(val)
+  if (isNaN(d.getTime())) return null
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}:${String(d.getSeconds()).padStart(2,'0')}`
+}
+
 // 新建日程
 const addEvent = async (event) => {
   try {
     // 兼容 ParsePreview（传 start）和 EventDialog（传 startTime）两种来源
     const rawTime = event.startTime || event.start
+    const startTime = toLocalStr(rawTime)
+
     const d = new Date(event.start)
     const isValidDate = !isNaN(d.getTime())
 
@@ -65,7 +76,7 @@ const addEvent = async (event) => {
       title: event.title,
       // startTime: isValidDate ? d.toISOString() : event.start
       description: event.description || null,
-      startTime: isValidDate ? rawTime : null,
+      startTime,
       endTime: event.endTime || null
     })
     if (res.code === 0) {

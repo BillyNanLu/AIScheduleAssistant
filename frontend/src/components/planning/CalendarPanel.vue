@@ -26,6 +26,8 @@ const calendarOptions = ref({
 
   locale: zhCnLocale,
 
+  timeZone: 'local',
+
   firstDay: 0, // 0 = 周日作为一周开始
 
   height: 680,
@@ -38,6 +40,14 @@ const calendarOptions = ref({
 
   buttonText: {
     today: '今天'
+  },
+
+  defaultTimedEventDuration: '00:01',  // 默认时长改为1分钟，不会跨天
+
+  eventTimeFormat: {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false
   },
 
   dateClick(info) {
