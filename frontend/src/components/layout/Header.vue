@@ -15,7 +15,8 @@
     ElDropdownItem, ElAvatar, ElIcon, ElMessage, ElMessageBox
   } from 'element-plus'
   import {
-    School, HomeFilled, Calendar, Message, Notebook, ArrowDownBold, ChatDotRound
+    School, HomeFilled, Calendar, Message, Notebook,
+    ArrowDownBold, ChatDotRound, Bell
   } from '@element-plus/icons-vue'
 
   const router = useRouter()
@@ -31,12 +32,10 @@
   const setActiveMenuByRoute = (path) => {
     if (path.includes('/planning')) {
       activeMenu.value = 'planning'
-    } else if (path.includes('/forum')) {
-      activeMenu.value = 'forum'
     } else if (path.includes('/ai-chat')) {
       activeMenu.value = 'ai-chat'
-    } else if (path.includes('/resources')) {
-      activeMenu.value = 'resources'
+    } else if (path.includes('/notifications')) {
+      activeMenu.value = 'notifications'
     } else if (path.includes('/profile')) {
       activeMenu.value = 'profile'
     } else {
@@ -173,6 +172,18 @@
 
       <!-- 已登录状态：下拉菜单显示用户信息 -->
       <template v-else>
+        <el-badge :value="3" class="message-badge">
+          <el-button
+              circle
+              @click="router.push('/notifications')"
+          >
+            <el-icon>
+              <Bell />
+            </el-icon>
+          </el-button>
+
+        </el-badge>
+
         <el-dropdown trigger="hover" placement="bottom-end">
           <div class="user-info">
             <el-avatar :src="userAvatar" class="user-avatar" />
