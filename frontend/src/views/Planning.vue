@@ -108,6 +108,7 @@ onMounted(() => {
 
       <EventSidebar
           :events="events"
+          @refresh="loadEvents"
       />
 
     </div>

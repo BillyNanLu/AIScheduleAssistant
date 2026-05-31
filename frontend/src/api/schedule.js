@@ -22,3 +22,8 @@ export const scheduleAddService = (addData) => {
 export const scheduleListService = () => {
     return request.get('/schedule/list')
 }
+
+// TODO: 提供调用删除日程接口的函数
+export const scheduleDeleteService = (id) => {
+    return request.delete(`/schedule/delete/${id}`)
+}

@@ -2,6 +2,7 @@
 import { ref, computed } from 'vue'
 import { ElTag, ElButton, ElTabs, ElTabPane, ElDialog, ElForm, ElFormItem, ElInput, ElDatePicker, ElCheckbox, ElMessageBox, ElMessage } from 'element-plus'
 import { Edit, Delete, Check } from '@element-plus/icons-vue'
+import { scheduleDeleteService } from '@/api/schedule.js'
 
 // 接受父组件传入的props数据
 const props = defineProps({
@@ -10,6 +11,8 @@ const props = defineProps({
     default: () => []
   }
 })
+
+const emit = defineEmits(['refresh'])
 
 // ── Tab ────────────────────────────────────────────────
 const activeTab = ref('all')
@@ -43,15 +46,19 @@ const toggleDone = (item) => {
 }
 
 // ── 删除 ───────────────────────────────────────────────
-const handleDelete = (item) => {
+const handleDelete = async (item) => {
   ElMessageBox.confirm(`确定删除「${item.title}」？`, '提示', {
     confirmButtonText: '删除',
     cancelButtonText: '取消',
     type: 'warning'
-  }).then(() => {
-    const idx = events.value.findIndex(e => e.id === item.id)
-    if (idx !== -1) events.value.splice(idx, 1)
-    ElMessage.success('已删除')
+  }).then(async () => {
+    const res = await scheduleDeleteService(item.id)
+    if (res.code === 0) {
+      ElMessage.success('已删除')
+      emit('refresh')   // 通知父组件重新拉数据
+    } else {
+      ElMessage.error(res.message || '删除失败')
+    }
   }).catch(() => {})
 }
 
