@@ -1,72 +1,41 @@
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useNotificationStore } from '@/stores/notification.js'
+import { notificationListService, notificationReadService } from '@/api/notification.js'
 import NotificationDetailDialog from '@/components/notification/NotificationDetailDialog.vue'
+import {ElMessage} from "element-plus";
 
 const notificationStore = useNotificationStore()
 
-import { showNotification } from '@/utils/notification'
-
-const testNotification = () => {
-
-  showNotification(
-      '日程提醒',
-      '项目会议将在30分钟后开始',
-      () => {
-        router.push('/notifications')
-      }
-  )
+const loadNotifications = async () => {
+  try {
+    const res = await notificationListService()
+    if (res.code === 0) {
+      notificationStore.setNotifications(res.data)
+    }
+  } catch (error) {
+    console.error(error)
+    ElMessage.error('加载通知失败')
+  }
 }
 
 onMounted(() => {
-
-  if ( notificationStore.notifications.length === 0) {
-
-    notificationStore.setNotifications([
-      {
-        id: 1,
-        title: '项目会议即将开始',
-        content: '项目会议将在30分钟后开始',
-        time: '5分钟前',
-        isRead: false,
-        schedule: {
-          id: 101,
-          title: '项目会议',
-          description: '讨论AI Schedule Assistant开发进度',
-          startTime: '2026-06-01 14:00',
-          endTime: '2026-06-01 15:00',
-          status: 0
-        }
-      },
-      {
-        id: 2,
-        title: '软件工程答辩即将开始',
-        content: '软件工程答辩将在明天09:00开始',
-        time: '1小时前',
-        isRead: false,
-        schedule: {
-          id: 102,
-          title: '软件工程答辩',
-          description: '毕业设计最终答辩',
-          startTime: '2026-06-02 09:00',
-          endTime: '2026-06-02 10:00',
-          status: 0
-        }
-      }
-    ])
-  }
-
+  loadNotifications()
 })
 
 const dialogVisible = ref(false)
 const currentSchedule = ref(null)
 
-const handleOpen = (item) => {
-  currentSchedule.value = item.schedule
+const handleOpen = async (item) => {
+  currentSchedule.value = item
   dialogVisible.value = true
 
-  // 标记已读
-  notificationStore.markAsRead(item.id)
+  try {
+    await notificationReadService(item.id)
+    notificationStore.markAsRead(item.id)
+  } catch (e) {
+    ElMessage.error('标记已读失败')
+  }
 }
 </script>
 
@@ -114,7 +83,7 @@ const handleOpen = (item) => {
           </div>
 
           <div class="time">
-            {{ item.time }}
+            {{ item.createTime }}
           </div>
 
         </div>

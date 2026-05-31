@@ -1,10 +1,11 @@
 import { showNotification } from './notification'
+import { notificationAddService } from '@/api/notification'
 
-export const checkUpcomingSchedules = ( schedules, notificationStore ) => {
+export const checkUpcomingSchedules = async (schedules, notificationStore) => {
 
     const now = Date.now()
 
-    schedules.forEach(schedule => {
+    for (const schedule of schedules) {
 
         const start = new Date(schedule.startTime).getTime()
 
@@ -19,8 +20,15 @@ export const checkUpcomingSchedules = ( schedules, notificationStore ) => {
                     `${schedule.title} 即将开始`,
                 content:
                     `${schedule.title}将在30分钟内开始`,
-                isRead:false,
+                isRead: false,
                 schedule
+            })
+
+            await notificationAddService({
+                scheduleId: schedule.id,
+                title: `${schedule.title}即将开始`,
+                content: `${schedule.title}将在30分钟后开始`,
+                type: 'REMINDER'
             })
 
             notificationStore.markNotified(
@@ -33,6 +41,6 @@ export const checkUpcomingSchedules = ( schedules, notificationStore ) => {
             )
         }
 
-    })
+    }
 
 }
