@@ -35,4 +35,9 @@ public class ScheduleServiceImpl implements ScheduleService {
         Schedule schedule = scheduleMapper.findBySpecificDay(id, specific);
         return schedule;
     }
+
+    @Override
+    public void deleteSchedule(Long id, Integer userId) {
+        scheduleMapper.deleteById(id, userId);
+    }
 }
