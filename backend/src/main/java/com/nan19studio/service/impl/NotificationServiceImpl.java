@@ -28,4 +28,9 @@ public class NotificationServiceImpl implements NotificationService {
     public void add(Notification notification) {
         notificationMapper.add(notification);
     }
+
+    @Override
+    public Notification getNotificationById(Long id) {
+        return notificationMapper.findById(id);
+    }
 }

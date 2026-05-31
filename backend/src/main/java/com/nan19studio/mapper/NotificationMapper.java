@@ -20,4 +20,8 @@ public interface NotificationMapper {
     @Insert("insert into notification (user_id, schedule_id, title, content, type, create_time) " +
             "values (#{userId}, #{scheduleId}, #{title}, #{content}, #{type}, now())")
     void add(Notification notification);
+
+    // 根据id查询通知
+    @Select("select * from notification where schedule_id = #{id}")
+    Notification findById(Long id);
 }

@@ -18,7 +18,7 @@ public class NotificationController {
     private NotificationService notificationService;
 
     // TODO: Get notification list（当前用户全部通知）
-    @GetMapping
+    @GetMapping("/list")
     public Result<List<Notification>> list() {
         Map<String, Object> map = ThreadLocalUtil.get();
         Integer id = (Integer) map.get("id");
@@ -38,10 +38,15 @@ public class NotificationController {
     // TODO: Add notification（添加通知）
     @PostMapping("/add")
     public Result add(@RequestBody Notification notification) {
-        Map<String, Object> map = ThreadLocalUtil.get();
-        Integer userId = (Integer) map.get("id");
-        notification.setUserId(userId.longValue());
-        notificationService.add(notification);
-        return Result.success("通知已创建");
+        Notification exist = notificationService.getNotificationById(notification.getScheduleId());
+        if (exist != null) {
+            return Result.error("通知已存在");
+        } else {
+            Map<String, Object> map = ThreadLocalUtil.get();
+            Integer userId = (Integer) map.get("id");
+            notification.setUserId(userId.longValue());
+            notificationService.add(notification);
+            return Result.success("通知已创建");
+        }
     }
 }

@@ -14,4 +14,7 @@ public interface NotificationService {
 
     // TODO: Add notification（添加通知）
     void add(Notification notification);
+
+    // TODO: Get notification by id（根据id获取通知）
+    Notification getNotificationById(Long id);
 }
