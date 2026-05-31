@@ -2,7 +2,7 @@
 import { ref, computed } from 'vue'
 import { ElTag, ElButton, ElTabs, ElTabPane, ElDialog, ElForm, ElFormItem, ElInput, ElDatePicker, ElCheckbox, ElMessageBox, ElMessage } from 'element-plus'
 import { Edit, Delete, Check } from '@element-plus/icons-vue'
-import { scheduleDeleteService, scheduleUpdateService } from '@/api/schedule.js'
+import { scheduleDeleteService, scheduleUpdateService, scheduleUpdateStatusService } from '@/api/schedule.js'
 
 // 接受父组件传入的props数据
 const props = defineProps({
@@ -40,9 +40,14 @@ const fmt = (str) => {
 }
 
 // ── 勾选完成 ───────────────────────────────────────────
-const toggleDone = (item) => {
-  item.status = item.status === 1 ? 0 : 1
-  item.updateTime = new Date().toISOString().slice(0, 19).replace('T', ' ')
+const toggleDone = async (item) => {
+  const newStatus = item.status === 1 ? 0 : 1
+  const res = await scheduleUpdateStatusService(item.id, newStatus)
+  if (res.code === 0) {
+    emit('refresh')
+  } else {
+    ElMessage.error(res.message || '状态更新失败')
+  }
 }
 
 // ── 删除 ───────────────────────────────────────────────
