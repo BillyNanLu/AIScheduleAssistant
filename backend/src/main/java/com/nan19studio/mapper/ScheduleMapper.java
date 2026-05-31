@@ -20,7 +20,7 @@ public interface ScheduleMapper {
 
     // 根据用户id和日期查询日程
     @Select("select * from schedule where user_id = #{id} and DATE(start_time) = #{specific} order by start_time desc")
-    Schedule findBySpecificDay(Integer id, String specific);
+    List<Schedule> findBySpecificDay(@Param("id") Integer id, @Param("specific") String specific);
 
     // 根据日程id和用户id删除日程
     @Delete("delete from schedule where id = #{id} and user_id = #{userId}")

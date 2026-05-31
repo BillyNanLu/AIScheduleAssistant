@@ -15,7 +15,7 @@ public interface ScheduleService {
     List<Schedule> getScheduleList(Integer id);
 
     // TODO: 获取特定日期的日程列表（当前用户今日日程）
-    Schedule getSpecificScheduleList(String specific);
+    List<Schedule> getSpecificScheduleList(Integer id, String specific);
 
     // TODO: 删除日程
     void deleteSchedule(Long id, Integer userId);

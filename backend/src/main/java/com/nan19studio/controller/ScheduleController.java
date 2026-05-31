@@ -43,9 +43,11 @@ public class ScheduleController {
 
     // TODO: Get specific day's schedule （当前用户今日日程）
     @GetMapping("/specific")
-    public Result<Schedule> specific(String specific) {
-        Schedule schedule = scheduleService.getSpecificScheduleList(specific);
-        return Result.success(schedule);
+    public Result<List<Schedule>> specific(String specific) {
+        Map<String, Object> map = ThreadLocalUtil.get();
+        Integer id = (Integer) map.get("id");
+        List<Schedule> schedules = scheduleService.getSpecificScheduleList(id, specific);
+        return Result.success(schedules);
     }
 
     // TODO: Delete schedule
