@@ -23,4 +23,9 @@ public class NotificationServiceImpl implements NotificationService {
     public void markAsRead(Long id, Integer userId) {
         notificationMapper.markAsRead(id, userId);
     }
+
+    @Override
+    public void add(Notification notification) {
+        notificationMapper.add(notification);
+    }
 }

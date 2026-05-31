@@ -35,4 +35,13 @@ public class NotificationController {
         return Result.success("已读");
     }
 
+    // TODO: Add notification（添加通知）
+    @PostMapping("/add")
+    public Result add(@RequestBody Notification notification) {
+        Map<String, Object> map = ThreadLocalUtil.get();
+        Integer userId = (Integer) map.get("id");
+        notification.setUserId(userId.longValue());
+        notificationService.add(notification);
+        return Result.success("通知已创建");
+    }
 }

@@ -11,4 +11,7 @@ public interface NotificationService {
 
     // TODO: Mark notification as read（标记通知为已读）
     void markAsRead(Long id, Integer userId);
+
+    // TODO: Add notification（添加通知）
+    void add(Notification notification);
 }
