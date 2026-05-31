@@ -8,6 +8,8 @@
   const tokenStore = useTokenStore();
   import { globalConfig } from "@/config/global"
   const siteName = globalConfig.siteName
+  import { useNotificationStore } from '@/stores/notification'
+  const notificationStore = useNotificationStore()
 
   // 引入Element Plus组件和图标
   import {
@@ -172,7 +174,10 @@
 
       <!-- 已登录状态：下拉菜单显示用户信息 -->
       <template v-else>
-        <el-badge :value="3" class="message-badge">
+        <el-badge
+            :value="notificationStore.unreadCount"
+            :hidden="notificationStore.unreadCount === 0"
+        >
           <el-button
               circle
               @click="router.push('/notifications')"
@@ -181,7 +186,6 @@
               <Bell />
             </el-icon>
           </el-button>
-
         </el-badge>
 
         <el-dropdown trigger="hover" placement="bottom-end">

@@ -1,53 +1,59 @@
 <script setup>
-import { computed, ref } from 'vue'
+import { ref, onMounted, computed } from 'vue'
+import { useNotificationStore } from '@/stores/notification.js'
 import NotificationDetailDialog from '@/components/notification/NotificationDetailDialog.vue'
 
-const notifications = ref([
-  {
-    id: 1,
-    title: '项目会议即将开始',
-    content: '项目会议将在30分钟后开始',
-    time: '5分钟前',
-    isRead: false,
-    schedule: {
-      id: 101,
-      title: '项目会议',
-      description: '讨论AI Schedule Assistant开发进度',
-      startTime: '2026-06-01 14:00',
-      endTime: '2026-06-01 15:00',
-      status: 0
-    }
-  },
-  {
-    id: 2,
-    title: '软件工程答辩即将开始',
-    content: '软件工程答辩将在明天09:00开始',
-    time: '1小时前',
-    isRead: false,
-    schedule: {
-      id: 102,
-      title: '软件工程答辩',
-      description: '毕业设计最终答辩',
-      startTime: '2026-06-02 09:00',
-      endTime: '2026-06-02 10:00',
-      status: 0
-    }
+const notificationStore = useNotificationStore()
+
+onMounted(() => {
+
+  if ( notificationStore.notifications.length === 0) {
+
+    notificationStore.setNotifications([
+      {
+        id: 1,
+        title: '项目会议即将开始',
+        content: '项目会议将在30分钟后开始',
+        time: '5分钟前',
+        isRead: false,
+        schedule: {
+          id: 101,
+          title: '项目会议',
+          description: '讨论AI Schedule Assistant开发进度',
+          startTime: '2026-06-01 14:00',
+          endTime: '2026-06-01 15:00',
+          status: 0
+        }
+      },
+      {
+        id: 2,
+        title: '软件工程答辩即将开始',
+        content: '软件工程答辩将在明天09:00开始',
+        time: '1小时前',
+        isRead: false,
+        schedule: {
+          id: 102,
+          title: '软件工程答辩',
+          description: '毕业设计最终答辩',
+          startTime: '2026-06-02 09:00',
+          endTime: '2026-06-02 10:00',
+          status: 0
+        }
+      }
+    ])
   }
-])
+
+})
 
 const dialogVisible = ref(false)
 const currentSchedule = ref(null)
-
-const unreadCount = computed(() => {
-  return notifications.value.filter(item => !item.isRead).length
-})
 
 const handleOpen = (item) => {
   currentSchedule.value = item.schedule
   dialogVisible.value = true
 
   // 标记已读
-  item.isRead = true
+  notificationStore.markAsRead(item.id)
 }
 </script>
 
@@ -58,19 +64,19 @@ const handleOpen = (item) => {
       <div>
         <h2>消息中心</h2>
         <p class="sub-title">
-          未读消息 {{ unreadCount }} 条
+          未读消息 {{ notificationStore.unreadCount }} 条
         </p>
       </div>
 
       <span>
-        共 {{ notifications.length }} 条消息
+        共 {{ notificationStore.notifications.length }} 条消息
       </span>
     </div>
 
     <div class="message-list">
 
       <div
-          v-for="item in notifications"
+          v-for="item in notificationStore.notifications"
           :key="item.id"
           class="message-card"
           :class="{ read: item.isRead }"
