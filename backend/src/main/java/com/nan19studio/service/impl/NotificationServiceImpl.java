@@ -18,4 +18,9 @@ public class NotificationServiceImpl implements NotificationService {
     public List<Notification> getNotificationList(Integer id) {
         return notificationMapper.findByUserId(id);
     }
+
+    @Override
+    public void markAsRead(Long id, Integer userId) {
+        notificationMapper.markAsRead(id, userId);
+    }
 }

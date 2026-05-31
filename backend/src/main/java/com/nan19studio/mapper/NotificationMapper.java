@@ -2,7 +2,9 @@ package com.nan19studio.mapper;
 
 import com.nan19studio.pojo.Notification;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
@@ -12,4 +14,8 @@ public interface NotificationMapper {
     // 根据用户id查询通知
     @Select("select * from notification where user_id = #{id} order by create_time desc")
     List<Notification> findByUserId(Integer id);
+
+    // 标记通知为已读
+    @Update("update notification set is_read = 1 where id = #{id} and user_id = #{userId}")
+    void markAsRead(@Param("id") Long id, @Param("userId") Integer userId);
 }
