@@ -2,7 +2,7 @@
 import { ref, computed } from 'vue'
 import { ElTag, ElButton, ElTabs, ElTabPane, ElDialog, ElForm, ElFormItem, ElInput, ElDatePicker, ElCheckbox, ElMessageBox, ElMessage } from 'element-plus'
 import { Edit, Delete, Check } from '@element-plus/icons-vue'
-import { scheduleDeleteService } from '@/api/schedule.js'
+import { scheduleDeleteService, scheduleUpdateService } from '@/api/schedule.js'
 
 // 接受父组件传入的props数据
 const props = defineProps({
@@ -71,13 +71,21 @@ const handleEdit = (item) => {
   editVisible.value = true
 }
 
-const submitEdit = () => {
-  const idx = events.value.findIndex(e => e.id === editForm.value.id)
-  if (idx !== -1) {
-    events.value[idx] = { ...editForm.value, updateTime: new Date().toISOString().slice(0, 19).replace('T', ' ') }
+const submitEdit = async () => {
+  const res = await scheduleUpdateService({
+    id: editForm.value.id,
+    title: editForm.value.title,
+    description: editForm.value.description,
+    startTime: editForm.value.startTime,
+    endTime: editForm.value.endTime || null
+  })
+  if (res.code === 0) {
+    ElMessage.success('已更新')
+    editVisible.value = false
+    emit('refresh')
+  } else {
+    ElMessage.error(res.message || '更新失败')
   }
-  editVisible.value = false
-  ElMessage.success('已更新')
 }
 </script>
 

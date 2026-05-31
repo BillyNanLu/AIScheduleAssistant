@@ -27,3 +27,8 @@ export const scheduleListService = () => {
 export const scheduleDeleteService = (id) => {
     return request.delete(`/schedule/delete/${id}`)
 }
+
+// TODO: 提供调用更新日程接口的函数
+export const scheduleUpdateService = (data) => {
+    return request.put('/schedule/update', data)
+}
