@@ -22,4 +22,7 @@ public interface ScheduleService {
 
     // TODO: 修改日程
     void updateSchedule(Schedule schedule, Integer userId);
+
+    // TODO: 修改日程状态
+    void updateScheduleStatus(Long id, Integer status, Integer userId);
 }

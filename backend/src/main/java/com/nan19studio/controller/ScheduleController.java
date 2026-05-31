@@ -57,13 +57,22 @@ public class ScheduleController {
         return Result.success("删除成功");
     }
 
-    // TODO: Update schedule
+    // TODO: Update schedule （修改title、description、start_time、end_time）
     @PutMapping("/update")
     public Result update(@RequestBody Schedule schedule) {
         Map<String, Object> map = ThreadLocalUtil.get();
         Integer userId = (Integer) map.get("id");
         scheduleService.updateSchedule(schedule, userId);
         return Result.success("修改成功");
+    }
+
+    // TODO: Update schedule status （修改status）
+    @PutMapping("/status/{id}")
+    public Result updateStatus(@PathVariable Long id, @RequestParam Integer status) {
+        Map<String, Object> map = ThreadLocalUtil.get();
+        Integer userId = (Integer) map.get("id");
+        scheduleService.updateScheduleStatus(id, status, userId);
+        return Result.success("状态更新成功");
     }
 
 }

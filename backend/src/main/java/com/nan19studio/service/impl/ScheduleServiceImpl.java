@@ -45,4 +45,9 @@ public class ScheduleServiceImpl implements ScheduleService {
     public void updateSchedule(Schedule schedule, Integer userId) {
         scheduleMapper.update(schedule, userId);
     }
+
+    @Override
+    public void updateScheduleStatus(Long id, Integer status, Integer userId) {
+        scheduleMapper.updateStatus(id, status, userId);
+    }
 }

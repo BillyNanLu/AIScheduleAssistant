@@ -29,4 +29,8 @@ public interface ScheduleMapper {
     // 根据日程id和用户id更新日程
     @Update("update schedule set title = #{schedule.title}, description = #{schedule.description}, start_time = #{schedule.startTime}, end_time = #{schedule.endTime}, reminder_time = #{schedule.reminderTime} ,update_time = now() where id = #{schedule.id} and user_id = #{userId}")
     void update(Schedule schedule, Integer userId);
+
+    // 根据日程id和用户id更新日程状态
+    @Update("update schedule set status=#{status}, update_time=now() where id=#{id} and user_id=#{userId}")
+    void updateStatus(@Param("id") Long id, @Param("status") Integer status, @Param("userId") Integer userId);
 }
