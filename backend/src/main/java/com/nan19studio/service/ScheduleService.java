@@ -19,4 +19,7 @@ public interface ScheduleService {
 
     // TODO: 删除日程
     void deleteSchedule(Long id, Integer userId);
+
+    // TODO: 修改日程
+    void updateSchedule(Schedule schedule, Integer userId);
 }

@@ -57,4 +57,13 @@ public class ScheduleController {
         return Result.success("删除成功");
     }
 
+    // TODO: Update schedule
+    @PutMapping("/update")
+    public Result update(@RequestBody Schedule schedule) {
+        Map<String, Object> map = ThreadLocalUtil.get();
+        Integer userId = (Integer) map.get("id");
+        scheduleService.updateSchedule(schedule, userId);
+        return Result.success("修改成功");
+    }
+
 }
